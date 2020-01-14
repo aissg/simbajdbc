@@ -1,0 +1,149 @@
+============================================================================= 
+Simba Spark JDBC Driver with SQL Connector Release Notes 
+============================================================================= 
+
+The release notes provide details of enhancements, features, and known issues 
+in Simba Spark JDBC Driver with SQL Connector 2.6.3.
+
+
+2.6.3 ======================================================================= 
+
+Released 2018-07-13
+
+ * [SPARKJ-163] Support for Spark 2.3.0
+
+   The driver now supports Spark 2.3.0.
+
+
+Known Issues 
+The following are known issues that you may encounter due to limitations in 
+the data source, the driver, or an application. 
+
+ * When retrieving data from a BINARY column, a ClassCastException error 
+   occurs.
+
+   In Spark 1.6.3 or earlier, the server sometimes returns a 
+   ClassCastException error when attempting to retrieve data from a BINARY 
+   column.
+
+   This issue is fixed as of Spark 2.0.0.
+
+   For more information, see the JIRA issue posted by Apache named "When
+   column type is binary, select occurs ClassCastException in Beeline" at
+   https://issues.apache.org/jira/browse/SPARK-12143.
+
+ * Backquotes in aliases are not handled correctly.
+
+   In Spark 1.0.x and 1.1.x, the backquotes ( ` ) surrounding identifiers 
+   are returned as part of the column names in the result set metadata. 
+   Backquotes are used to quote identifiers in HiveQL, and should not be 
+   considered as part of the identifier. As a workaround, the driver now 
+   removes the backquotes ( ` ) when it translates queries.
+
+   This issue is fixed as of Spark 1.2.x.
+
+   For more information, see the JIRA issue posted by Apache named "Backticks 
+   Aren't Handled Correctly in Aliases" at 
+   https://issues.apache.org/jira/browse/SPARK-3708.
+
+ * Filtering on TIMESTAMP columns does not return any rows.
+
+   In Spark 0.9.x, 1.0.x, and 1.1.0, using the WHERE statement to filter 
+   TIMESTAMP columns does not return any rows.
+
+   This issue is fixed as of Spark 1.1.1.
+
+   For more information, see the JIRA issue posted by Apache named 
+   "Timestamp Support in the Parser" at 
+   https://issues.apache.org/jira/browse/SPARK-3173.
+
+ * Cannot use AND to combine a TIMESTAMP column filter with another filter.
+
+   In Spark 1.1.x, when you execute a query that uses the AND operator to 
+   combine a TIMESTAMP column filter with another filter, an error occurs.
+
+   This issue is fixed as of Spark 1.2.x.
+
+   As a workaround, use a subquery, as shown in the following example:
+
+   SELECT * FROM (SELECT * FROM timestamp_table WHERE 
+   (keycolumn='TimestampMicroSeconds')) s1 WHERE (column1 = '1955-10-11 
+   11:10:33.123456');
+
+
+Version History ==============================================================
+
+2.6.2 ------------------------------------------------------------------------
+
+Released 2018-05-30
+
+Enhancements & New Features
+
+ * Internal driver improvements
+
+   The driver has been updated with minor internal improvements.
+
+
+2.6.1 ------------------------------------------------------------------------ 
+
+Released 2018-04-30
+
+Enhancements & New Features
+
+ * [SPARKJ-171] Updated Zookeeper support
+   
+   Zookeeper for the driver has been upgraded to 3.4.11.
+
+
+Resolved Issues
+The following issues have been resolved in Simba Spark JDBC Driver 2.6.1.
+
+ * [SPARKJ-156] On Spark 1.6 and earlier, if you attempt to execute a SQL 
+   statement that contains a newline character, the message "ERROR 
+   processing query/statement" is displayed.
+
+ * [SPARKJ-161] When the driver attempts to connect to the server using 
+   Beeline, an error occurs on the server and an exception is logged by the 
+   driver. 
+
+   This issue has been resolved. Now, when connecting to the server using 
+   Beeline, connection properties such as "driver" and "url" are no longer 
+   treated as configuration properties for the server, and the driver does 
+   not send SET queries to the server with these properties.
+
+ * [SPARKJ-162] A string literal after a back-tick ( ` ) is treated as a 
+   comment.
+ 
+
+2.6.0 ------------------------------------------------------------------------ 
+
+Released 2018-02-28
+
+Enhancements & New Features
+
+ * Improved installation process
+
+   Third-party libraries are now bundled with the driver as a shaded jar file.
+
+ * Updated hive-service
+
+   The driver has been upgraded to use hive-service-2.0.1 with JDBC 4.1 and 
+   hive-service-1.1.1 for JDBC 4.
+
+ * Updated third-party libraries
+
+   The driver has been upgraded to use http-client 4.5.3, http-core 4.4.6, 
+   commons-codec 1.9, and commons-logging 1.2.
+
+
+Resolved Issues
+The following issues have been resolved in Simba Spark JDBC Driver 2.6.0.
+
+ * The driver removes query comments and hints when the UseNativeQuery 
+   property is set to 1.
+
+ * The driver returns an error when calling catalog or schema functions 
+   against a MapR Spark distribution.
+
+
+============================================================================== 
